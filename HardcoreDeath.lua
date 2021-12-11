@@ -141,7 +141,7 @@ function ChatFrame_OnEvent(event)
 		
 		if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" then
 			if arg1 == "You die." then
-				DEFAULT_CHAT_FRAME:AddMessage("DEBUG: " .. LastMsg)
+				--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: " .. LastMsg)
 				local msg = ""
 				if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
 					msg = "I died while standing in a fire"
