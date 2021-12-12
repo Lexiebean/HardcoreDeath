@@ -1,6 +1,7 @@
 HardcoreDeath_ChatFrame_OnEvent = ChatFrame_OnEvent
 local LastTarget = ""
 local LastMsg = ""
+local LastTime = ""
 
 -- Checking if we're a hardcore character
 local function ishc()
@@ -87,54 +88,63 @@ function ChatFrame_OnEvent(event)
 			-- %s's %s hits you for %d %s damage.
 			for source, attack, damage, school in string.gfind(arg1, hcdSPELLLOGSCHOOLOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			end
 
 			   -- %s's %s crits you for %d %s damage.
 			  for source, attack, damage, school in string.gfind(arg1, hcdSPELLLOGCRITSCHOOLOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			   -- %s's %s hits you for %d.
 			  for source, attack, damage in string.gfind(arg1, hcdSPELLLOGOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			   -- %s's %s crits you for %d.
 			  for source, attack, damage in string.gfind(arg1, hcdSPELLLOGCRITOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			  -- "You suffer %d %s damage from %s's %s."; -- You suffer 3 frost damage from Rabbit's Ice Nova.
 			  for damage, school, source, attack in string.gfind(arg1, hcdPERIODICAURADAMAGEOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			  -- %s hits you for %d.
 			  for source, damage in string.gfind(arg1, hcdCOMBATHITOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			  -- %s crits you for %d.
 			  for source, damage in string.gfind(arg1, hcdCOMBATHITCRITOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			  -- %s hits you for %d %s damage.
 			  for source, damage, school in string.gfind(arg1, hcdCOMBATHITSCHOOLOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 
 			  -- %s crits you for %d %s damage.
 			  for source, damage, school in string.gfind(arg1, hcdCOMBATHITCRITSCHOOLOTHERSELF) do
 				LastTarget = source
+				LastTime = GetTime()
 				return
 			  end
 		end
@@ -143,6 +153,16 @@ function ChatFrame_OnEvent(event)
 			if arg1 == "You die." then
 				--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: " .. LastMsg)
 				local msg = ""
+
+				if (GetTime() - LastTime) >= 5 then
+					if GetZoneText() == "Duskwood" then
+						msg = "I forgot that you can't AoE in Duskwood and died to an Unseen"
+					else
+						msg = "I died to an unknown cause"
+						DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
+					end
+				end
+
 				if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
 					msg = "I died while standing in a fire"
 				elseif strfind(LastMsg, "fall and lose") then
@@ -154,10 +174,11 @@ function ChatFrame_OnEvent(event)
 				else
 					msg = "A " .. LastTarget .. " has killed me"
 				end
-				if (ishc) then
-					SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil);
+				if (ishc) and UnitLevel("player") ~= 1 then
+					SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
 					--DEFAULT_CHAT_FRAME:AddMessage("Hardcore Death: " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
-					end
+					DEFAULT_CHAT_FRAME:AddMessage("Damn! That really sucks. I'm so sorry! I hope you still had fun while getting to level " ..UnitLevel("player") .. ". I'm sure you'll do better next time!")
+				end
 			end
 
 		end

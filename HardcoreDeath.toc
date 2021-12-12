@@ -2,5 +2,5 @@
 ## Title: Hardcore Death Announcer
 ## Author: Lexie
 ## Notes: Announces in guild chat how you died if you died while playing hardcore mode.
-## Version: 1.0
+## Version: 1.0.2
 HardcoreDeath.lua
