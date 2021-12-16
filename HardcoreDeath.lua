@@ -174,7 +174,7 @@ function ChatFrame_OnEvent(event)
 				else
 					msg = "A " .. LastTarget .. " has killed me"
 				end
-				if (ishc) and UnitLevel("player") ~= 1 then
+				if (ishc) and UnitLevel("player") ~= 60 then
 					SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
 					--DEFAULT_CHAT_FRAME:AddMessage("Hardcore Death: " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
 					DEFAULT_CHAT_FRAME:AddMessage("Damn! That really sucks. I'm so sorry! I hope you still had fun while getting to level " ..UnitLevel("player") .. ". I'm sure you'll do better next time!")
