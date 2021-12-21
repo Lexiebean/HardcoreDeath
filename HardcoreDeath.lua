@@ -2,8 +2,10 @@ HardcoreDeath_ChatFrame_OnEvent = ChatFrame_OnEvent
 local LastTarget = ""
 local LastMsg = ""
 local LastTime = ""
+local gfind = string.gmatch or string.gfind
+if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
 
--- Checking if we're a hardcore character
+-- Check if Hardcore by scaning the spellbook
 local function ishc()
 	local i = 1
 	while true do
@@ -151,7 +153,6 @@ function ChatFrame_OnEvent(event)
 		
 		if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" then
 			if arg1 == "You die." then
-				--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: " .. LastMsg)
 				local msg = ""
 
 				if (GetTime() - LastTime) >= 5 then
@@ -163,10 +164,11 @@ function ChatFrame_OnEvent(event)
 					end
 				end
 
+				-- Death Messages
 				if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
 					msg = "I died while standing in a fire"
 				elseif strfind(LastMsg, "fall and lose") then
-					msg = "I fell to my death"
+					msg = "I somehow managed to actually fall to my death"
 				elseif strfind(LastMsg, "You are exhausted") then
 					msg = "I died to fatigue damage"
 				elseif strfind(LastMsg, "drowning") then
@@ -174,10 +176,18 @@ function ChatFrame_OnEvent(event)
 				else
 					msg = "A " .. LastTarget .. " has killed me"
 				end
+				
+				-- Only send the message if they're doing the hardcore challenge
 				if (ishc) and UnitLevel("player") ~= 60 then
 					SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
 					--DEFAULT_CHAT_FRAME:AddMessage("Hardcore Death: " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
-					DEFAULT_CHAT_FRAME:AddMessage("Damn! That really sucks. I'm so sorry! I hope you still had fun while getting to level " ..UnitLevel("player") .. ". I'm sure you'll do better next time!")
+					
+					-- Screenshot? (Idea by [Sorgis])
+					if HardcoreDeath_Screenshot then
+						Screenshot()
+						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
+					end
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Damn! That really sucks. I'm so sorry! I hope you still had fun while getting to level " ..UnitLevel("player") .. ". I'm sure you'll do better next time!")
 				end
 			end
 
@@ -185,4 +195,29 @@ function ChatFrame_OnEvent(event)
     end
 	
   HardcoreDeath_ChatFrame_OnEvent(event);
+end
+
+-- Options
+SLASH_HARDCOREDEATH1, SLASH_HARDCOREDEATH2 = "/hcd", "/hardcoredeath"
+SlashCmdList["HARDCOREDEATH"] = function(message)
+  local commandlist = { }
+  local command
+
+  for command in gfind(message, "[^ ]+") do
+    table.insert(commandlist, string.lower(command))
+  end
+
+  -- toggle screenshot
+  if commandlist[1] == "ss" then
+	if HardcoreDeath_Screenshot then
+		HardcoreDeath_Screenshot = false
+	else
+		HardcoreDeath_Screenshot = true
+	end
+    DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Automatically Screenshot Death:|cffbe5eff ".. tostring(HardcoreDeath_Screenshot))
+	
+  else
+	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.4")
+    DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
+  end
 end
