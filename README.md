@@ -4,7 +4,7 @@ An addon for Turtle WoW that announces in guild how you died if you're doing the
 This addon will also take a screenshot of your death.
 
 Use command: `/hcd` - To check version and settings status  
-Use command: `/hcd ss` - To enable/disable death screenshotting
+Use command: `/hcd ss` - To enable/disable death screenshotting  
 use command: `/hcd world` - To enable/disable sending death messages to world chat.
 
 Install location should be: ..\Interface\AddOns\HardcoreDeath
