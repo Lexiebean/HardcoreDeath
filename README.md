@@ -1,4 +1,4 @@
-# Hardcore-Death
+# HardcoreDeath
 An addon for Turtle WoW that announces in guild how you died if you're doing the hardcore challenge.
 
 This addon will also take a screenshot of your death.
