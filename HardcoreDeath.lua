@@ -4,6 +4,7 @@ local LastMsg = ""
 local LastTime = ""
 local gfind = string.gmatch or string.gfind
 if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
+if HardcoreDeath_World == nil then HardcoreDeath_World = true end
 
 -- Check if Hardcore by scaning the spellbook
 local function ishc()
@@ -28,6 +29,16 @@ local function prepare(template)
     template = gsub(template, "%d%$","")
     template = gsub(template, "%%s", "(.+)")
     return gsub(template, "%%d", "(%%d+)")
+end
+
+local function FindWorld()
+	for i=1,50 do
+		local id, name = GetChannelName(i)
+		if (name == "world") then
+			return id
+		end
+		end
+	return nil
 end
 
 function ChatFrame_OnEvent(event)
@@ -179,10 +190,16 @@ function ChatFrame_OnEvent(event)
 				
 				-- Only send the message if they're doing the hardcore challenge
 				if (ishc) and UnitLevel("player") ~= 60 then
-					SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
-					--DEFAULT_CHAT_FRAME:AddMessage("Hardcore Death: " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
-					
-					-- Screenshot? (Idea by [Sorgis])
+					local wid = FindWorld()
+					if wid and HardcoreDeath_World then
+						SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "CHANNEL", nil, wid)
+					end
+					if not IsInGuild() then
+						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[[HardcoreDeath]|r  " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
+					else
+						SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
+					end
+					-- Screenshot (Idea by [Sorgis])
 					if HardcoreDeath_Screenshot then
 						Screenshot()
 						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
@@ -200,24 +217,31 @@ end
 -- Options
 SLASH_HARDCOREDEATH1, SLASH_HARDCOREDEATH2 = "/hcd", "/hardcoredeath"
 SlashCmdList["HARDCOREDEATH"] = function(message)
-  local commandlist = { }
-  local command
+	local commandlist = { }
+	local command
 
-  for command in gfind(message, "[^ ]+") do
-    table.insert(commandlist, string.lower(command))
-  end
-
-  -- toggle screenshot
-  if commandlist[1] == "ss" then
-	if HardcoreDeath_Screenshot then
-		HardcoreDeath_Screenshot = false
-	else
-		HardcoreDeath_Screenshot = true
+	for command in gfind(message, "[^ ]+") do
+		table.insert(commandlist, string.lower(command))
 	end
-    DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Automatically Screenshot Death:|cffbe5eff ".. tostring(HardcoreDeath_Screenshot))
-	
-  else
-	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.4")
-    DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
-  end
+
+	-- toggle screenshot
+	if commandlist[1] == "ss" then
+		if HardcoreDeath_Screenshot then
+			HardcoreDeath_Screenshot = false
+		else
+			HardcoreDeath_Screenshot = true
+		end
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Automatically Screenshot Death:|cffbe5eff ".. tostring(HardcoreDeath_Screenshot))
+	elseif commandlist[1] == "world" then
+		if HardcoreDeath_World then
+			HardcoreDeath_World = false
+		else
+			HardcoreDeath_World = true
+		end
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.5")
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
+	end
 end
