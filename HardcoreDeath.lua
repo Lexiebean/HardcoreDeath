@@ -191,7 +191,7 @@ function ChatFrame_OnEvent(event)
 				-- Only send the message if they're doing the hardcore challenge
 				if (ishc) and UnitLevel("player") ~= 60 then
 					local wid = FindWorld()
-					if wid and HardcoreDeath_World then
+					if wid and HardcoreDeath_World and UnitLevel("player") >= 10 then
 						SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "CHANNEL", nil, wid)
 					end
 					if not IsInGuild() then
