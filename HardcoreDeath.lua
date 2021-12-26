@@ -201,6 +201,7 @@ function ChatFrame_OnEvent(event)
 					end
 					-- Screenshot (Idea by [Sorgis])
 					if HardcoreDeath_Screenshot then
+						RequestTimePlayed()
 						Screenshot()
 						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
 					end
