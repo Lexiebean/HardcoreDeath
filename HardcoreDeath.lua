@@ -3,6 +3,9 @@ local LastTarget = ""
 local LastMsg = ""
 local LastTime = ""
 local gfind = string.gmatch or string.gfind
+local msg = ""
+local dead = nil
+local death = ""
 if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
 if HardcoreDeath_World == nil then HardcoreDeath_World = true end
 
@@ -39,6 +42,28 @@ local function FindWorld()
 		end
 		end
 	return nil
+end
+
+local function FormatTime(s)
+	
+	local days = floor(s/24/60/60); s = mod(s, 24*60*60);
+	local hours = floor(s/60/60); s = mod(s, 60*60);
+	local minutes = floor(s/60); s = mod(s, 60);
+	local seconds = s;
+	
+	local timeText = "";
+	if (days ~= 0) then
+		timeText = timeText..format("%dd ", days);
+	end
+	if (days ~= 0 or hours ~= 0) then
+		timeText = timeText..format("%dhr ", hours);
+	end
+	if (days ~= 0 or hours ~= 0 or minutes ~= 0) then
+		timeText = timeText..format("%dm ", minutes);
+	end	
+	timeText = timeText..format("%ds", seconds);
+	
+	return timeText;
 end
 
 function ChatFrame_OnEvent(event)
@@ -164,53 +189,62 @@ function ChatFrame_OnEvent(event)
 		
 		if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" then
 			if arg1 == "You die." then
-				local msg = ""
+				dead = true
 
 				if (GetTime() - LastTime) >= 5 then
 					if GetZoneText() == "Duskwood" then
-						msg = "I forgot that you can't AoE in Duskwood and died to an Unseen"
+						death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
 					else
-						msg = "I died to an unknown cause"
+						death = "I died to an unknown cause"
 						DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
 					end
 				end
 
 				-- Death Messages
 				if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
-					msg = "I died while standing in a fire"
+					death = "I died while standing in a fire"
 				elseif strfind(LastMsg, "fall and lose") then
-					msg = "I somehow managed to actually fall to my death"
+					death = "I somehow managed to actually fall to my death"
 				elseif strfind(LastMsg, "You are exhausted") then
-					msg = "I died to fatigue damage"
+					death = "I died to fatigue damage"
 				elseif strfind(LastMsg, "drowning") then
-					msg = "I drowned"
+					death = "I drowned"
 				else
-					msg = "A " .. LastTarget .. " has killed me"
+					death = "A " .. LastTarget .. " has killed me"
 				end
+						
+				RequestTimePlayed()
 				
-				-- Only send the message if they're doing the hardcore challenge
-				if (ishc) and UnitLevel("player") ~= 60 then
-					local wid = FindWorld()
-					if wid and HardcoreDeath_World and UnitLevel("player") >= 10 then
-						SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "CHANNEL", nil, wid)
-					end
-					if not IsInGuild() then
-						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[[HardcoreDeath]|r  " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").")
-					else
-						SendChatMessage("[HardcoreDeath] " .. msg .. " at level " ..UnitLevel("player") .. " in " .. GetSubZoneText() .. " (" .. GetZoneText() .. ").", "GUILD", nil)
-					end
-					-- Screenshot (Idea by [Sorgis])
-					if HardcoreDeath_Screenshot then
-						RequestTimePlayed()
-						Screenshot()
-						DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
-					end
-					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Damn! That really sucks. I'm so sorry! I hope you still had fun while getting to level " ..UnitLevel("player") .. ". I'm sure you'll do better next time!")
-				end
 			end
 
 		end
     end
+	
+	if (event == "TIME_PLAYED_MSG") then
+		-- Remember play time
+			
+		if (dead) then
+			
+			msg = death .. " at level " ..UnitLevel("player") .. " after " .. FormatTime(arg1) .. " /played. In " .. GetSubZoneText() .. " (" .. GetZoneText() .. ")."
+			-- Only send the message if they're doing the hardcore challenge
+			if (ishc) and UnitLevel("player") ~= 60 then
+				local wid = FindWorld()
+				if wid and HardcoreDeath_World and UnitLevel("player") >= 10 then
+					SendChatMessage("[HardcoreDeath] " .. msg, "CHANNEL", nil, wid)
+				end
+				if not IsInGuild() then
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[[HardcoreDeath]|r " .. msg)
+				else
+					SendChatMessage("[HardcoreDeath] " .. msg, "GUILD", nil)
+				end
+				-- Screenshot (Idea by [Sorgis])
+				if HardcoreDeath_Screenshot then
+					Screenshot()
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
+				end
+			end
+		end
+	end
 	
   HardcoreDeath_ChatFrame_OnEvent(event);
 end
@@ -241,7 +275,7 @@ SlashCmdList["HARDCOREDEATH"] = function(message)
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.5")
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.6")
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	end
