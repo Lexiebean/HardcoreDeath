@@ -3,5 +3,5 @@
 ## Author: Lexie
 ## Notes: Announces in guild chat how you died if you died while playing hardcore mode.
 ## Version: 1.0.6
-## SavedVariables: HardcoreDeath_Screenshot
+## SavedVariables: HardcoreDeath_Screenshot HardcoreDeath_World
 HardcoreDeath.lua
