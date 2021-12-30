@@ -18,7 +18,7 @@ local function ishc()
 			do break end
 		end
 
-		if spellName == "Hardcore" then
+		if spellName == "Hardcore" and spellRank == "Challenge" then
 			return true
 		end
      
@@ -34,6 +34,7 @@ local function prepare(template)
     return gsub(template, "%%d", "(%%d+)")
 end
 
+-- Find world chat
 local function FindWorld()
 	for i=1,50 do
 		local id, name = GetChannelName(i)
@@ -44,6 +45,7 @@ local function FindWorld()
 	return nil
 end
 
+-- Format /played (Idea by [Calcyon])
 local function FormatTime(s)
 	
 	local days = floor(s/24/60/60); s = mod(s, 24*60*60);
@@ -221,13 +223,12 @@ function ChatFrame_OnEvent(event)
     end
 	
 	if (event == "TIME_PLAYED_MSG") then
-		-- Remember play time
 			
 		if (dead) then
 			
 			msg = death .. " at level " ..UnitLevel("player") .. " after " .. FormatTime(arg1) .. " /played. In " .. GetSubZoneText() .. " (" .. GetZoneText() .. ")."
 			-- Only send the message if they're doing the hardcore challenge
-			if (ishc) and UnitLevel("player") ~= 60 then
+			if ishc() and UnitLevel("player") ~= 60 then
 				local wid = FindWorld()
 				if wid and HardcoreDeath_World and UnitLevel("player") >= 10 then
 					SendChatMessage("[HardcoreDeath] " .. msg, "CHANNEL", nil, wid)
