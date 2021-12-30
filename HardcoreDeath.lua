@@ -276,7 +276,7 @@ SlashCmdList["HARDCOREDEATH"] = function(message)
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.6")
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.7")
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	end
