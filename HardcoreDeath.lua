@@ -193,30 +193,31 @@ function ChatFrame_OnEvent(event)
 			if arg1 == "You die." then
 				dead = true
 
-				if (GetTime() - LastTime) >= 5 then
-					if GetZoneText() == "Duskwood" then
-						death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
-					else
-						death = "I died to an unknown cause"
-						DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
+				if ishc() and UnitLevel("player") ~= 60 then
+					if (GetTime() - LastTime) >= 5 then
+						if GetZoneText() == "Duskwood" then
+							death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
+						else
+							death = "I died to an unknown cause"
+							DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
+						end
 					end
-				end
 
-				-- Death Messages
-				if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
-					death = "I died while standing in a fire"
-				elseif strfind(LastMsg, "fall and lose") then
-					death = "I somehow managed to actually fall to my death"
-				elseif strfind(LastMsg, "You are exhausted") then
-					death = "I died to fatigue damage"
-				elseif strfind(LastMsg, "drowning") then
-					death = "I drowned"
-				else
-					death = "A " .. LastTarget .. " has killed me"
+					-- Death Messages
+					if strfind(LastMsg, "suffer") and strfind(LastMsg, "fire damage") then
+						death = "I died while standing in a fire"
+					elseif strfind(LastMsg, "fall and lose") then
+						death = "I somehow managed to actually fall to my death"
+					elseif strfind(LastMsg, "You are exhausted") then
+						death = "I died to fatigue damage"
+					elseif strfind(LastMsg, "drowning") then
+						death = "I drowned"
+					else
+						death = "A " .. LastTarget .. " has killed me"
+					end
+							
+					RequestTimePlayed()
 				end
-						
-				RequestTimePlayed()
-				
 			end
 
 		end
@@ -241,7 +242,7 @@ function ChatFrame_OnEvent(event)
 				-- Screenshot (Idea by [Sorgis])
 				if HardcoreDeath_Screenshot then
 					Screenshot()
-					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\Screenshots")
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r A screenshot of your death has been saved to ..\\Screenshots")
 				end
 			end
 		end
@@ -276,7 +277,7 @@ SlashCmdList["HARDCOREDEATH"] = function(message)
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.7")
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v1.0.8")
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	end
