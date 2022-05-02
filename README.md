@@ -10,3 +10,7 @@ use command: `/hcd world` - To enable/disable sending death messages to world ch
 Install location should be: ..\Interface\AddOns\HardcoreDeath
 
 ![Hardcore Death](https://github.com/Lexiebean/Hardcore-Death/raw/main/Preview.png)
+
+![Hardcore Death](https://github.com/Lexiebean/Hardcore-Death/raw/main/DeathMessage.png)
+
+![Hardcore Death](https://github.com/Lexiebean/Hardcore-Death/raw/main/DeathLog.png)
