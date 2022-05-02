@@ -9,7 +9,7 @@ local death = ""
 local lastsliderPlayed = 0
 if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
 if HardcoreDeath_World == nil then HardcoreDeath_World = true end
---if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
+if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
 
 
 local frame = CreateFrame("FRAME", "HardcoreDeath_FriendFrame");
