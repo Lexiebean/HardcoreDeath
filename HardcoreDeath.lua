@@ -32,7 +32,6 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				elseif (class == "Shaman") then ccol = "|cff0070dd"
 				elseif (class == "Warlock") then ccol = "|cff8788ee"
 				elseif (class == "Warrior") then ccol = "|cffc69b6d" end
-
 				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the |r"..ccol..class.." |cfffff000has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
 				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 				if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
@@ -45,7 +44,7 @@ end
 frame:SetScript("OnEvent", HardcoreDeath_eventHandler);
 
 --pfUI.api.strsplit
-local function hcstrsplit(delimiter, subject)
+function hcstrsplit(delimiter, subject)
   if not subject then return nil end
   local delimiter, fields = delimiter or ":", {}
   local pattern = string.format("([^%s]+)", delimiter)
@@ -348,7 +347,7 @@ SlashCmdList["HARDCOREDEATH"] = function(message)
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r v2.0.0rc1")
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r "..tostring(GetAddOnMetadata("HardcoreDeath", "Version")))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
 	end
@@ -360,7 +359,7 @@ local function GenerateLogDates(i,length)
 
 	local output = "==== Date ==== \n\n"
 	
-	for i=i,length do
+	for i=i,length, -1 do
 		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
 		
 		local _,_,y=string.find(d,"(%d%d)")
@@ -380,7 +379,7 @@ local function GenerateLogNames(i,length)
 
 	local output = "=== Name === \n\n"
 	
-	for i=i,length do
+	for i=i,length, -1 do
 		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. n .. "\n"
 	end
@@ -391,7 +390,7 @@ local function GenerateLogLevels(i,length)
 
 	local output = "= Level = \n\n"
 	
-	for i=i,length do
+	for i=i,length, -1 do
 		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. l .. "\n"
 	end
@@ -402,7 +401,7 @@ local function GenerateLogClasses(i,length)
 
 	local output = "= Class = \n\n"
 	
-	for i=i,length do
+	for i=i,length, -1 do
 		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. c .. "\n"
 	end
@@ -413,7 +412,7 @@ local function GenerateLogZones(i,length)
 
 	local output = "===== Zone ===== \n\n"
 	
-	for i=i,length do
+	for i=i,length, -1 do
 		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. z .. "\n"
 	end
@@ -426,9 +425,13 @@ function GenerateLog()
 	if (table.getn(HardcoreDeath_Log) < 30) then maxV = 1 end
 	HardcoreDeathLogGUI.slider:SetMinMaxValues(1, maxV)
 
-	local i = HardcoreDeathLogGUI.slider:GetValue()
-	length = i+29
-	if (length > table.getn(HardcoreDeath_Log)) then length = table.getn(HardcoreDeath_Log) end
+	--local i = HardcoreDeathLogGUI.slider:GetValue()
+	--local length = i+29
+	--if (length > table.getn(HardcoreDeath_Log)) then length = table.getn(HardcoreDeath_Log) end
+	
+	local i = table.getn(HardcoreDeath_Log) - HardcoreDeathLogGUI.slider:GetValue() +1
+	local length = i-29
+	if (length < 1) then length = 1 end
 	
 	local HardcoreDeathLogDates = GenerateLogDates(i,length)
 	local HardcoreDeathLogNames = GenerateLogNames(i,length)
@@ -454,7 +457,7 @@ HardcoreDeathLogGUI:SetScript("OnHide", function()
 end)
 
 HardcoreDeathLogGUI:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-HardcoreDeathLogGUI:SetWidth(460)
+HardcoreDeathLogGUI:SetWidth(550)
 HardcoreDeathLogGUI:SetHeight(450)
 HardcoreDeathLogGUI:SetBackdrop({
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -519,43 +522,43 @@ end)
 
 HardcoreDeathLogGUI.logdates = CreateFrame("Frame", "HardcoreDeathLogGUILogDates", HardcoreDeathLogGUI)
 HardcoreDeathLogGUI.logdates:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
-HardcoreDeathLogGUI.logdates:SetWidth(20)
-HardcoreDeathLogGUI.logdates:SetHeight(20)
+HardcoreDeathLogGUI.logdates:SetWidth(10)
+HardcoreDeathLogGUI.logdates:SetHeight(10)
 
 HardcoreDeathLogGUI.logdates.text = HardcoreDeathLogGUI.logdates:CreateFontString(nil, "HIGH", "GameFontNormal")
 HardcoreDeathLogGUI.logdates.text:SetPoint("TOPLEFT", 14, -38)
 
 HardcoreDeathLogGUI.lognames = CreateFrame("Frame", "HardcoreDeathLogGUILogNames", HardcoreDeathLogGUI)
 HardcoreDeathLogGUI.lognames:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
-HardcoreDeathLogGUI.lognames:SetWidth(20)
-HardcoreDeathLogGUI.lognames:SetHeight(20)
+HardcoreDeathLogGUI.lognames:SetWidth(10)
+HardcoreDeathLogGUI.lognames:SetHeight(10)
 
 HardcoreDeathLogGUI.lognames.text = HardcoreDeathLogGUI.lognames:CreateFontString(nil, "HIGH", "GameFontNormal")
-HardcoreDeathLogGUI.lognames.text:SetPoint("TOPLEFT", 114, -38)
+HardcoreDeathLogGUI.lognames.text:SetPoint("TOPLEFT", 154, -38)
 
 HardcoreDeathLogGUI.loglevels = CreateFrame("Frame", "HardcoreDeathLogGUILogLevels", HardcoreDeathLogGUI)
 HardcoreDeathLogGUI.loglevels:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
-HardcoreDeathLogGUI.loglevels:SetWidth(20)
-HardcoreDeathLogGUI.loglevels:SetHeight(20)
+HardcoreDeathLogGUI.loglevels:SetWidth(10)
+HardcoreDeathLogGUI.loglevels:SetHeight(10)
 
 HardcoreDeathLogGUI.loglevels.text = HardcoreDeathLogGUI.loglevels:CreateFontString(nil, "HIGH", "GameFontNormal")
-HardcoreDeathLogGUI.loglevels.text:SetPoint("TOPLEFT", 200, -38)
+HardcoreDeathLogGUI.loglevels.text:SetPoint("TOPLEFT", 250, -38)
 
 HardcoreDeathLogGUI.logclasses = CreateFrame("Frame", "HardcoreDeathLogGUILogClasses", HardcoreDeathLogGUI)
 HardcoreDeathLogGUI.logclasses:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
-HardcoreDeathLogGUI.logclasses:SetWidth(20)
-HardcoreDeathLogGUI.logclasses:SetHeight(20)
+HardcoreDeathLogGUI.logclasses:SetWidth(10)
+HardcoreDeathLogGUI.logclasses:SetHeight(10)
 
 HardcoreDeathLogGUI.logclasses.text = HardcoreDeathLogGUI.logclasses:CreateFontString(nil, "HIGH", "GameFontNormal")
-HardcoreDeathLogGUI.logclasses.text:SetPoint("TOPLEFT", 264, -38)
+HardcoreDeathLogGUI.logclasses.text:SetPoint("TOPLEFT", 314, -38)
 
 HardcoreDeathLogGUI.logzones = CreateFrame("Frame", "HardcoreDeathLogGUILogZones", HardcoreDeathLogGUI)
 HardcoreDeathLogGUI.logzones:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
-HardcoreDeathLogGUI.logzones:SetWidth(20)
-HardcoreDeathLogGUI.logzones:SetHeight(20)
+HardcoreDeathLogGUI.logzones:SetWidth(10)
+HardcoreDeathLogGUI.logzones:SetHeight(10)
 
 HardcoreDeathLogGUI.logzones.text = HardcoreDeathLogGUI.logzones:CreateFontString(nil, "HIGH", "GameFontNormal")
-HardcoreDeathLogGUI.logzones.text:SetPoint("TOPLEFT", 320, -38)
+HardcoreDeathLogGUI.logzones.text:SetPoint("TOPLEFT", 380, -38)
 
 
 HardcoreDeathLogFrame = CreateFrame("Button", "GameMenuButtonHardcoreDeathLogGUI", GameMenuFrame, "GameMenuButtonTemplate")
@@ -570,3 +573,65 @@ end)
 
 GameMenuButtonLogout:ClearAllPoints()
 GameMenuButtonLogout:SetPoint("TOP", HardcoreDeathLogFrame, "BOTTOM", 0, -1)
+
+
+--Update announcing code taken from pfUI
+local major, minor, fix = hcstrsplit(".", tostring(GetAddOnMetadata("HardcoreDeath", "Version")))
+
+local alreadyshown = false
+local localversion  = tonumber(major*10000 + minor*100 + fix)
+local remoteversion = tonumber(hcdupdateavailable) or 0
+local loginchannels = { "BATTLEGROUND", "RAID", "GUILD" }
+local groupchannels = { "BATTLEGROUND", "RAID" }
+  
+hcdupdater = CreateFrame("Frame")
+hcdupdater:RegisterEvent("CHAT_MSG_ADDON")
+hcdupdater:RegisterEvent("PLAYER_ENTERING_WORLD")
+hcdupdater:RegisterEvent("PARTY_MEMBERS_CHANGED")
+hcdupdater:SetScript("OnEvent", function()
+	if event == "CHAT_MSG_ADDON" and arg1 == "hcd" then
+		local v, remoteversion = hcstrsplit(":", arg2)
+		local remoteversion = tonumber(remoteversion)
+		if v == "VERSION" and remoteversion then
+			if remoteversion > localversion then
+				hcdupdateavailable = remoteversion
+				if not alreadyshown then
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r New version available! https://github.com/Lexiebean/HardcoreDeath/")
+					alreadyshown = true
+				end
+			end
+		end
+		--This is a little check that I can use to see if people are actually using the addon.
+		--Eventually it'll be expanded into the ability to sync death logs.
+		if v == "PING?" then
+			for _, chan in pairs(loginchannels) do
+				SendAddonMessage("hcd", "PONG!", chan)
+			end
+		end
+		if v == "PONG!" then
+			--print(arg1 .." "..arg2.." "..arg3.." "..arg4)
+		end
+	end
+
+	if event == "PARTY_MEMBERS_CHANGED" then
+		local groupsize = GetNumRaidMembers() > 0 and GetNumRaidMembers() or GetNumPartyMembers() > 0 and GetNumPartyMembers() or 0
+		if ( this.group or 0 ) < groupsize then
+			for _, chan in pairs(groupchannels) do
+				SendAddonMessage("hcd", "VERSION:" .. localversion, chan)
+			end
+		end
+		this.group = groupsize
+	end
+
+    if event == "PLAYER_ENTERING_WORLD" then
+      if not alreadyshown and localversion < remoteversion then
+        DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r New version available! https://github.com/Lexiebean/HardcoreDeath/releases")
+        hcdupdateavailable = localversion
+        alreadyshown = true
+      end
+
+      for _, chan in pairs(loginchannels) do
+        SendAddonMessage("hcd", "VERSION:" .. localversion, chan)
+      end
+    end
+  end)

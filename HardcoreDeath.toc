@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: Hardcore Death Announcer and Log
 ## Author: Lexie
-## Notes: Announces to guild how you died. Logs all HC deaths. Improves system death messages.
-## Version: 2.0.0rc1
-## SavedVariables: HardcoreDeath_Screenshot HardcoreDeath_World HardcoreDeath_Log
+## Notes: Announces to guild how you died. Logs all HC deaths. Adds more detail to the system death messages.
+## Version: 2.1.0
+## SavedVariables: HardcoreDeath_Screenshot HardcoreDeath_World HardcoreDeath_Log hcdupdateavailable
 HardcoreDeath.lua
