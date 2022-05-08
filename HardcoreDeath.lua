@@ -10,6 +10,7 @@ local lastsliderPlayed = 0
 if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
 if HardcoreDeath_World == nil then HardcoreDeath_World = true end
 if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
+if HardcoreDeath_Log == nil then HardcoreDeath_Log = {} end
 
 
 local frame = CreateFrame("FRAME", "HardcoreDeath_FriendFrame");
@@ -51,10 +52,8 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				end
 			end
 			
-			SendChatMessage("Another life lost to " ..area..". RIP "..ccol..name.."|r the level "..level..race.." "..ccol..class.."|r." , "GUILD", nil)
+			--
 			DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
-			if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
-			if not ddate then ddate = "0000000000" end
 			table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 			if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
 				i = 200
@@ -627,7 +626,7 @@ hcdupdater:SetScript("OnEvent", function()
 			end
 		end
 		if v == "PONG!" then
-			print(arg1 .." "..arg2.." "..arg3.." "..arg4)
+			--
 		end
 	end
 
