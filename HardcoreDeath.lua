@@ -54,9 +54,10 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = "High Elf"
 				end
 				if race ~= "" then
-					guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2]..">"
-					if guild == nil then guild = "" end
-					race = " "..race
+					if CensusPlus_Database[s][r][f][race][class][name][2] then
+						guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2]..">"
+						race = " "..race
+					end
 				end
 			end
 			
