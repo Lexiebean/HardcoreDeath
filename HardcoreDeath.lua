@@ -19,9 +19,11 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 	if HardcoreDeath_Find then
 		for i=0, 200 do
 			local name, level, class, area = GetFriendInfo(i)
+			local race = ""
 
 			if (name == HardcoreDeath_Find) then
 				ddate = date("!%y%m%d%H%M")
+				
 				
 				if (class == "Druid") then ccol = "|cffff7c0a"
 				elseif (class == "Hunter") then ccol = "|cffaad372"
@@ -32,9 +34,29 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				elseif (class == "Shaman") then ccol = "|cff0070dd"
 				elseif (class == "Warlock") then ccol = "|cff8788ee"
 				elseif (class == "Warrior") then ccol = "|cffc69b6d" end
-				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the |r"..ccol..class.." |cfffff000has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
-				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
-				if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
+				
+			--forgive me father for I have sinned
+			if (IsAddOnLoaded("CensusPlus")) then
+				local s="Servers"; r="Turtle WoW"; f="TURTLE";			
+				if CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Orc"] and CensusPlus_Database[s][r][f]["Orc"][class] and CensusPlus_Database[s][r][f]["Orc"][class][name] then race = " Orc"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Tauren"] and CensusPlus_Database[s][r][f]["Tauren"][class] and CensusPlus_Database[s][r][f]["Tauren"][class][name] then race = " Tauren"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Troll"] and CensusPlus_Database[s][r][f]["Troll"][class] and CensusPlus_Database[s][r][f]["Troll"][class][name] then race = " Troll"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Undead"] and CensusPlus_Database[s][r][f]["Undead"][class] and CensusPlus_Database[s][r][f]["Undead"][class][name] then race = " Undead"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Goblin"] and CensusPlus_Database[s][r][f]["Goblin"][class] and CensusPlus_Database[s][r][f]["Goblin"][class][name] then race = " Goblin"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Dwarf"] and CensusPlus_Database[s][r][f]["Dwarf"][class] and CensusPlus_Database[s][r][f]["Dwarf"][class][name] then race = " Dwarf"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Gnome"] and CensusPlus_Database[s][r][f]["Gnome"][class] and CensusPlus_Database[s][r][f]["Gnome"][class][name] then race = " Gnome"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Human"] and CensusPlus_Database[s][r][f]["Human"][class] and CensusPlus_Database[s][r][f]["Human"][class][name] then race = " Human"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = " Night Elf"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = " High Elf"
+				end
+			end
+			
+			SendChatMessage("Another life lost to " ..area..". RIP "..ccol..name.."|r the level "..level..race.." "..ccol..class.."|r." , "GUILD", nil)
+			DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+			if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
+			if not ddate then ddate = "0000000000" end
+			table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
+			if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
 				i = 200
 			end
 		end
@@ -425,10 +447,6 @@ function GenerateLog()
 	if (table.getn(HardcoreDeath_Log) < 30) then maxV = 1 end
 	HardcoreDeathLogGUI.slider:SetMinMaxValues(1, maxV)
 
-	--local i = HardcoreDeathLogGUI.slider:GetValue()
-	--local length = i+29
-	--if (length > table.getn(HardcoreDeath_Log)) then length = table.getn(HardcoreDeath_Log) end
-	
 	local i = table.getn(HardcoreDeath_Log) - HardcoreDeathLogGUI.slider:GetValue() +1
 	local length = i-29
 	if (length < 1) then length = 1 end
@@ -609,7 +627,7 @@ hcdupdater:SetScript("OnEvent", function()
 			end
 		end
 		if v == "PONG!" then
-			--print(arg1 .." "..arg2.." "..arg3.." "..arg4)
+			print(arg1 .." "..arg2.." "..arg3.." "..arg4)
 		end
 	end
 
