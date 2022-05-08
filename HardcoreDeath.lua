@@ -53,14 +53,14 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = "Night Elf"
 				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = "High Elf"
 				end
-				if not race == "" then
+				if race ~= "" then
 					guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2]..">"
 					if guild == nil then guild = "" end
 					race = " "..race
 				end
 			end
 			
-			--SendChatMessage("Another life lost to " ..area..". RIP "..ccol..name.."|r the level "..level..race.." "..ccol..class.."|r"..guild.."." , "GUILD", nil)
+			--
 			DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
 			table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 			if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
