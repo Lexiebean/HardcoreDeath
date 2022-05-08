@@ -2,6 +2,6 @@
 ## Title: Hardcore Death Announcer and Log
 ## Author: Lexie
 ## Notes: Announces to guild how you died. Logs all HC deaths. Adds more detail to the system death messages.
-## Version: 2.2.1
+## Version: 2.2.2
 ## SavedVariables: HardcoreDeath_Screenshot HardcoreDeath_World HardcoreDeath_Log hcdupdateavailable
 HardcoreDeath.lua

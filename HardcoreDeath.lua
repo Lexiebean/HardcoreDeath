@@ -18,9 +18,12 @@ frame:RegisterEvent("FRIENDLIST_UPDATE");
 local function HardcoreDeath_eventHandler(self, event, ...)
 
 	if HardcoreDeath_Find then
+		if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
+		if HardcoreDeath_Log == nil then HardcoreDeath_Log = {} end
 		for i=0, 200 do
 			local name, level, class, area = GetFriendInfo(i)
 			local race = ""
+			local guild = ""
 
 			if (name == HardcoreDeath_Find) then
 				ddate = date("!%y%m%d%H%M")
@@ -39,21 +42,26 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 			--forgive me father for I have sinned
 			if (IsAddOnLoaded("CensusPlus")) then
 				local s="Servers"; r="Turtle WoW"; f="TURTLE";			
-				if CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Orc"] and CensusPlus_Database[s][r][f]["Orc"][class] and CensusPlus_Database[s][r][f]["Orc"][class][name] then race = " Orc"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Tauren"] and CensusPlus_Database[s][r][f]["Tauren"][class] and CensusPlus_Database[s][r][f]["Tauren"][class][name] then race = " Tauren"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Troll"] and CensusPlus_Database[s][r][f]["Troll"][class] and CensusPlus_Database[s][r][f]["Troll"][class][name] then race = " Troll"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Undead"] and CensusPlus_Database[s][r][f]["Undead"][class] and CensusPlus_Database[s][r][f]["Undead"][class][name] then race = " Undead"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Goblin"] and CensusPlus_Database[s][r][f]["Goblin"][class] and CensusPlus_Database[s][r][f]["Goblin"][class][name] then race = " Goblin"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Dwarf"] and CensusPlus_Database[s][r][f]["Dwarf"][class] and CensusPlus_Database[s][r][f]["Dwarf"][class][name] then race = " Dwarf"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Gnome"] and CensusPlus_Database[s][r][f]["Gnome"][class] and CensusPlus_Database[s][r][f]["Gnome"][class][name] then race = " Gnome"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Human"] and CensusPlus_Database[s][r][f]["Human"][class] and CensusPlus_Database[s][r][f]["Human"][class][name] then race = " Human"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = " Night Elf"
-				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = " High Elf"
+				if CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Orc"] and CensusPlus_Database[s][r][f]["Orc"][class] and CensusPlus_Database[s][r][f]["Orc"][class][name] then race = "Orc"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Tauren"] and CensusPlus_Database[s][r][f]["Tauren"][class] and CensusPlus_Database[s][r][f]["Tauren"][class][name] then race = "Tauren"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Troll"] and CensusPlus_Database[s][r][f]["Troll"][class] and CensusPlus_Database[s][r][f]["Troll"][class][name] then race = "Troll"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Undead"] and CensusPlus_Database[s][r][f]["Undead"][class] and CensusPlus_Database[s][r][f]["Undead"][class][name] then race = "Undead"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Goblin"] and CensusPlus_Database[s][r][f]["Goblin"][class] and CensusPlus_Database[s][r][f]["Goblin"][class][name] then race = "Goblin"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Dwarf"] and CensusPlus_Database[s][r][f]["Dwarf"][class] and CensusPlus_Database[s][r][f]["Dwarf"][class][name] then race = "Dwarf"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Gnome"] and CensusPlus_Database[s][r][f]["Gnome"][class] and CensusPlus_Database[s][r][f]["Gnome"][class][name] then race = "Gnome"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Human"] and CensusPlus_Database[s][r][f]["Human"][class] and CensusPlus_Database[s][r][f]["Human"][class][name] then race = "Human"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = "Night Elf"
+				elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = "High Elf"
+				end
+				if not race == "" then
+					guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2]..">"
+					if guild == nil then guild = "" end
+					race = " "..race
 				end
 			end
 			
-			--
-			DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+			--SendChatMessage("Another life lost to " ..area..". RIP "..ccol..name.."|r the level "..level..race.." "..ccol..class.."|r"..guild.."." , "GUILD", nil)
+			DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
 			table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 			if (HardcoreDeathLogGUI:IsVisible()) then GenerateLog() end
 				i = 200
@@ -441,6 +449,9 @@ local function GenerateLogZones(i,length)
 end
 
 function GenerateLog()
+
+	if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
+	if HardcoreDeath_Log == nil then HardcoreDeath_Log = {} end
 
 	maxV = table.getn(HardcoreDeath_Log) - 29
 	if (table.getn(HardcoreDeath_Log) < 30) then maxV = 1 end
