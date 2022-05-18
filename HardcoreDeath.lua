@@ -24,11 +24,12 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 			local name, level, class, area = GetFriendInfo(i)
 			local race = ""
 			local guild = ""
+			local ccol = ""
+			local cend = ""
 
 			if (name == HardcoreDeath_Find) then
 				ddate = date("!%y%m%d%H%M")
-				
-				
+					
 				if (class == "Druid") then ccol = "|cffff7c0a"
 				elseif (class == "Hunter") then ccol = "|cffaad372"
 				elseif (class == "Mage") then ccol = "|cff3dc7eb"
@@ -38,6 +39,8 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				elseif (class == "Shaman") then ccol = "|cff0070dd"
 				elseif (class == "Warlock") then ccol = "|cff8788ee"
 				elseif (class == "Warrior") then ccol = "|cffc69b6d" end
+				
+				if not ccol == "" then cend = "|r" end
 				
 				--forgive me father for I have sinned
 				if (IsAddOnLoaded("CensusPlus")) then
@@ -55,15 +58,18 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 					end
 					if race ~= "" then
 						if CensusPlus_Database[s][r][f][race][class][name][2] then
-							guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2].."> "
+							guild = CensusPlus_Database[s][r][f][race][class][name][2]
+							if guild == "" then
+								guild = " the unguilded  "
+							else
+								guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2].."> "
+							end
 							race = " "..race
 						end
 					end
 				end
-				
 				--
-				--
-				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. |r"..ccol..name.."|r|cfffff000 the"..race.."|r "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol..name..cend.."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
 				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 				if (HardcoreDeathLogGUI:IsVisible()) then 
 					GenerateLog() 
@@ -455,6 +461,8 @@ function GenerateLog()
 
 	if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
 	if HardcoreDeath_Log == nil then HardcoreDeath_Log = {} end
+	
+	HardcoreDeathLogGUI.title.text:SetText("Hardcore Death Log ["..tostring(table.getn(HardcoreDeath_Log)).."]")
 
 	maxV = table.getn(HardcoreDeath_Log) - 29
 	if (table.getn(HardcoreDeath_Log) < 30) then maxV = 1 end
@@ -638,9 +646,6 @@ hcdupdater:SetScript("OnEvent", function()
 			for _, chan in pairs(loginchannels) do
 				SendAddonMessage("hcd", "PONG!:"..GetAddOnMetadata("HardcoreDeath", "Version"), chan)
 			end
-		end
-		if v == "PONG!" then
-			--
 		end
 	end
 
