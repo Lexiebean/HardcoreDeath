@@ -7,11 +7,11 @@ local msg = ""
 local dead = nil
 local death = ""
 local lastsliderPlayed = 0
-if HardcoreDeath_Screenshot == nil then HardcoreDeath_Screenshot = true end
-if HardcoreDeath_World == nil then HardcoreDeath_World = true end
-if not HardcoreDeath_Log then HardcoreDeath_Log = {} end
-if HardcoreDeath_Log == nil then HardcoreDeath_Log = {} end
-
+HardcoreDeath_Remove = false
+HardcoreDeath_Sent = false
+HardcoreDeath_Screenshot = true
+HardcoreDeath_World = true
+HardcoreDeath_Log = {}
 
 local frame = CreateFrame("FRAME", "HardcoreDeath_FriendFrame");
 frame:RegisterEvent("FRIENDLIST_UPDATE");
@@ -44,37 +44,45 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				
 				--forgive me father for I have sinned
 				if (IsAddOnLoaded("CensusPlus")) then
-					local s="Servers"; r="Turtle WoW"; f="TURTLE";			
-					if CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Orc"] and CensusPlus_Database[s][r][f]["Orc"][class] and CensusPlus_Database[s][r][f]["Orc"][class][name] then race = "Orc"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Tauren"] and CensusPlus_Database[s][r][f]["Tauren"][class] and CensusPlus_Database[s][r][f]["Tauren"][class][name] then race = "Tauren"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Troll"] and CensusPlus_Database[s][r][f]["Troll"][class] and CensusPlus_Database[s][r][f]["Troll"][class][name] then race = "Troll"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Undead"] and CensusPlus_Database[s][r][f]["Undead"][class] and CensusPlus_Database[s][r][f]["Undead"][class][name] then race = "Undead"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Goblin"] and CensusPlus_Database[s][r][f]["Goblin"][class] and CensusPlus_Database[s][r][f]["Goblin"][class][name] then race = "Goblin"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Dwarf"] and CensusPlus_Database[s][r][f]["Dwarf"][class] and CensusPlus_Database[s][r][f]["Dwarf"][class][name] then race = "Dwarf"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Gnome"] and CensusPlus_Database[s][r][f]["Gnome"][class] and CensusPlus_Database[s][r][f]["Gnome"][class][name] then race = "Gnome"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Human"] and CensusPlus_Database[s][r][f]["Human"][class] and CensusPlus_Database[s][r][f]["Human"][class][name] then race = "Human"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = "Night Elf"
-					elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = "High Elf"
-					end
-					if race ~= "" then
-						if CensusPlus_Database[s][r][f][race][class][name][2] then
-							guild = CensusPlus_Database[s][r][f][race][class][name][2]
-							if guild == "" then
-								guild = " the unguilded  "
-							else
-								guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2].."> "
+					local _, title = GetAddOnInfo("CensusPlus")
+						if (title == "CensusPlusTurtle") then
+						
+						local s="Servers"; r="Turtle WoW"; f="TURTLE";			
+						if CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Orc"] and CensusPlus_Database[s][r][f]["Orc"][class] and CensusPlus_Database[s][r][f]["Orc"][class][name] then race = "Orc"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Tauren"] and CensusPlus_Database[s][r][f]["Tauren"][class] and CensusPlus_Database[s][r][f]["Tauren"][class][name] then race = "Tauren"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Troll"] and CensusPlus_Database[s][r][f]["Troll"][class] and CensusPlus_Database[s][r][f]["Troll"][class][name] then race = "Troll"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Undead"] and CensusPlus_Database[s][r][f]["Undead"][class] and CensusPlus_Database[s][r][f]["Undead"][class][name] then race = "Undead"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Goblin"] and CensusPlus_Database[s][r][f]["Goblin"][class] and CensusPlus_Database[s][r][f]["Goblin"][class][name] then race = "Goblin"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Dwarf"] and CensusPlus_Database[s][r][f]["Dwarf"][class] and CensusPlus_Database[s][r][f]["Dwarf"][class][name] then race = "Dwarf"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Gnome"] and CensusPlus_Database[s][r][f]["Gnome"][class] and CensusPlus_Database[s][r][f]["Gnome"][class][name] then race = "Gnome"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Human"] and CensusPlus_Database[s][r][f]["Human"][class] and CensusPlus_Database[s][r][f]["Human"][class][name] then race = "Human"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["Night Elf"] and CensusPlus_Database[s][r][f]["Night Elf"][class] and CensusPlus_Database[s][r][f]["Night Elf"][class][name] then race = "Night Elf"
+						elseif CensusPlus_Database[s] and CensusPlus_Database[s][r] and CensusPlus_Database[s][r][f] and CensusPlus_Database[s][r][f]["High Elf"] and CensusPlus_Database[s][r][f]["High Elf"][class] and CensusPlus_Database[s][r][f]["High Elf"][class][name] then race = "High Elf"
+						end
+						if race ~= "" then
+							if CensusPlus_Database[s][r][f][race][class][name][2] then
+								guild = CensusPlus_Database[s][r][f][race][class][name][2]
+								if guild == "" then
+									guild = " the unguilded  "
+								else
+									guild =  " of <"..CensusPlus_Database[s][r][f][race][class][name][2].."> "
+								end
+								race = " "..race
 							end
-							race = " "..race
 						end
 					end
 				end
-				--
-				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol..name..cend.."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+				HardcoreDeath_Sent = true
 				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 				if (HardcoreDeathLogGUI:IsVisible()) then 
 					GenerateLog() 
 				end
 			end
+		end
+		if (HardcoreDeath_Remove == true and HardcoreDeath_Sent == true) then
+			RemoveFriend(HardcoreDeath_Find)
+			HardcoreDeath_Remove = false
 		end
 	end
 
@@ -92,20 +100,36 @@ end
 
 
 -- Check if Hardcore by scaning the spellbook
-local function ishc()
-	local i = 1
-	while true do
-	local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
-		if not spellName then
-			do break end
-		end
+local function ishc(challenge)
+    local i = 1
+    while true do
+    local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
+        if not spellName then
+            do break end
+        end
 
-		if spellName == "Hardcore" and spellRank == "Challenge" then
-			return true
-		end
+        if spellName == challenge and spellRank == "Challenge" then
+            --return "\124cff71d5ff\124Hspell:"..i..":0:"..UnitName("player").."\124h["..challenge.."]\124h\124r"
+			return "["..challenge.."]"
+        end
      
-		i = i + 1
-	end
+        i = i + 1
+    end
+end
+
+local function iswm()
+    local i = 1
+    while true do
+    local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
+        if not spellName then
+            do break end
+        end
+        if spellName == "War Mode" and spellRank == "Challenge" then
+            return true
+        end
+     
+        i = i + 1
+    end
 end
 
 local function prepare(template)
@@ -275,8 +299,8 @@ function ChatFrame_OnEvent(event)
 			if arg1 == "You die." then
 				dead = true
 
-				if ishc() and UnitLevel("player") ~= 60 then
-					if (GetTime() - LastTime) >= 5 then
+				if ishc("Hardcore") and UnitLevel("player") ~= 60 then
+					if (GetTime() - tostring(LastTime)) >= 5 then
 						if GetZoneText() == "Duskwood" then
 							death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
 						else
@@ -309,9 +333,17 @@ function ChatFrame_OnEvent(event)
 			
 		if (dead) then
 			
-			msg = death .. " at level " ..UnitLevel("player") .. " after " .. FormatTime(arg1) .. " /played. In " .. GetSubZoneText() .. " (" .. GetZoneText() .. ")."
+			local challengeMsg = ""
+			if ishc("Slow & Steady") or ishc("War Mode") or ishc("Exhaustion") then
+				challengeMsg = " Challenges: "
+				if ishc("Slow & Steady") then challengeMsg = challengeMsg..ishc("Slow & Steady") end
+				if ishc("War Mode") then challengeMsg = challengeMsg..ishc("War Mode") end
+				if ishc("Exhaustion") then challengeMsg = challengeMsg..ishc("Exhaustion") end
+			end
+						
+			local msg = death .. "in " .. GetSubZoneText().. " (" .. GetZoneText() .. ") at level " ..UnitLevel("player") .. ". " .. FormatTime(arg1) .. " /played." ..challengeMsg
 			-- Only send the message if they're doing the hardcore challenge
-			if ishc() and UnitLevel("player") ~= 60 then
+			if ishc("Hardcore") and UnitLevel("player") ~= 60 then
 				local wid = FindWorld()
 				if wid and HardcoreDeath_World and UnitLevel("player") >= 10 then
 					SendChatMessage("[HardcoreDeath] " .. msg, "CHANNEL", nil, wid)
@@ -334,6 +366,8 @@ function ChatFrame_OnEvent(event)
 	if (event == "CHAT_MSG_SYSTEM") then
 		_, _, chr = string.find(arg1,"A tragedy has occurred. Hardcore character (%a+)")
 		if (chr) then
+			HardcoreDeath_Remove = false
+			HardcoreDeath_Sent = false
 			HardcoreDeath_Find = chr
 			AddFriend(chr)
 			return
@@ -343,15 +377,22 @@ function ChatFrame_OnEvent(event)
 		_, _, alreadyfriend = string.find(arg1,"(%a+) is already your friend")
 		_, _, removedfriend = string.find(arg1,"(%a+) removed from friends")
 		if (addedfriend or removedfriend or alreadyfriend) then
-			if (removedfriend == HardcoreDeath_Find) then
-				HardcoreDeath_Find = nil
-				return
-			elseif (alreadyfriend == HardcoreDeath_Find) then
-				HardcoreDeath_Find = nil
-				return
-			elseif (addedfriend == HardcoreDeath_Find) then 
-				RemoveFriend(addedfriend)
-				return
+			if HardcoreDeath_Find then	
+				if (removedfriend == HardcoreDeath_Find) then
+					HardcoreDeath_Find = nil
+					HardcoreDeath_Sent = false
+					return
+				elseif (alreadyfriend == HardcoreDeath_Find) then
+					HardcoreDeath_Find = nil
+					HardcoreDeath_Sent = false
+					return
+				elseif (addedfriend == HardcoreDeath_Find) then 
+					if (HardcoreDeath_Sent == true) then
+						RemoveFriend(addedfriend)
+						HardcoreDeath_Sent = false
+					end
+					return
+				end
 			end
 		end
 	end
@@ -635,7 +676,7 @@ hcdupdater:SetScript("OnEvent", function()
 			if remoteversion > localversion then
 				hcdupdateavailable = remoteversion
 				if not alreadyshown then
-					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r New version available! https://github.com/Lexiebean/HardcoreDeath/")
+					DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r New version available! https://github.com/Lexiebean/HardcoreDeath/releases")
 					alreadyshown = true
 				end
 			end
