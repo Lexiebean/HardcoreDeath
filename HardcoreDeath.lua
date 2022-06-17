@@ -341,7 +341,7 @@ function ChatFrame_OnEvent(event)
 				if ishc("Exhaustion") then challengeMsg = challengeMsg..ishc("Exhaustion") end
 			end
 						
-			local msg = death .. "in " .. GetSubZoneText().. " (" .. GetZoneText() .. ") at level " ..UnitLevel("player") .. ". " .. FormatTime(arg1) .. " /played." ..challengeMsg
+			local msg = death .. " in " .. GetSubZoneText().. " (" .. GetZoneText() .. ") at level " ..UnitLevel("player") .. ". " .. FormatTime(arg1) .. " /played." ..challengeMsg
 			-- Only send the message if they're doing the hardcore challenge
 			if ishc("Hardcore") and UnitLevel("player") ~= 60 then
 				local wid = FindWorld()
@@ -687,6 +687,9 @@ hcdupdater:SetScript("OnEvent", function()
 			for _, chan in pairs(loginchannels) do
 				SendAddonMessage("hcd", "PONG!:"..GetAddOnMetadata("HardcoreDeath", "Version"), chan)
 			end
+		end
+		if v == "PONG!" then
+			print(arg1 .." "..arg2.." "..arg3.." "..arg4)
 		end
 	end
 
