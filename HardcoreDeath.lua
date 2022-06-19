@@ -305,7 +305,6 @@ function ChatFrame_OnEvent(event)
 							death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
 						else
 							death = "I died to an unknown cause"
-							DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
 						end
 					end
 
@@ -320,6 +319,10 @@ function ChatFrame_OnEvent(event)
 						death = "I drowned"
 					else
 						death = "A " .. LastTarget .. " has killed me"
+					end
+					
+					if (death == "I died to an unknown cause") then
+						DEFAULT_CHAT_FRAME:AddMessage("If you got this message, please screenshot your combat log and send it to Lexie#4024 on discord and tell me what happened.");
 					end
 							
 					RequestTimePlayed()
