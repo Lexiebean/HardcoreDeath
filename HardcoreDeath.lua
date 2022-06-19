@@ -300,7 +300,7 @@ function ChatFrame_OnEvent(event)
 				dead = true
 
 				if ishc("Hardcore") and UnitLevel("player") ~= 60 then
-					if (GetTime() - tostring(LastTime)) >= 5 then
+					if (GetTime() - LastTime) >= 5 then
 						if GetZoneText() == "Duskwood" then
 							death = "I forgot that you can't AoE in Duskwood and died to an Unseen"
 						else
@@ -689,7 +689,7 @@ hcdupdater:SetScript("OnEvent", function()
 			end
 		end
 		if v == "PONG!" then
-			print(arg1 .." "..arg2.." "..arg3.." "..arg4)
+			--print(arg1 .." "..arg2.." "..arg3.." "..arg4)
 		end
 	end
 
