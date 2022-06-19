@@ -1,7 +1,7 @@
 HardcoreDeath_ChatFrame_OnEvent = ChatFrame_OnEvent
 local LastTarget = ""
 local LastMsg = ""
-local LastTime = ""
+local LastTime = GetTime()
 local gfind = string.gmatch or string.gfind
 local msg = ""
 local dead = nil
