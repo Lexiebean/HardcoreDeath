@@ -12,6 +12,7 @@ HardcoreDeath_Sent = false
 HardcoreDeath_Screenshot = true
 HardcoreDeath_World = true
 HardcoreDeath_Log = {}
+HardcoreDeath_Killer = ""
 
 local frame = CreateFrame("FRAME", "HardcoreDeath_FriendFrame");
 frame:RegisterEvent("FRIENDLIST_UPDATE");
@@ -72,7 +73,7 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 						end
 					end
 				end
-				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." to"..HardcoreDeath_Killer.."at level "..level..". May this sacrifice not be forgotten.|r")
 				HardcoreDeath_Sent = true
 				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 				if (HardcoreDeathLogGUI:IsVisible()) then 
@@ -373,6 +374,25 @@ function ChatFrame_OnEvent(event)
 			HardcoreDeath_Sent = false
 			HardcoreDeath_Find = chr
 			AddFriend(chr)
+			--Adding reason of death (part of code from Discord, idk who)
+			--Death by mob
+			atLevel, _, _ = string.find(arg1," at level")
+			_, hasFallen, _ = string.find(arg1,"has fallen to ")
+			if(hasFallen) then
+				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
+			end
+			--Death by Player
+			hasFallen = nil
+			_, hasFallen, _ = string.find(arg1,"has fallen in ")
+			if(hasFallen) then
+				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
+			end
+			--Death by Natural causes
+			hasFallen = nil
+			_, hasFallen, _ = string.find(arg1,"died of ")
+			if(hasFallen) then
+				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
+			end
 			return
 		end
 		
