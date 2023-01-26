@@ -376,22 +376,22 @@ function ChatFrame_OnEvent(event)
 			AddFriend(chr)
 			--Adding reason of death (part of code from Discord, idk who)
 			--Death by mob
+			atLevel, _, _ = string.find(arg1," at level")
 			_, hasFallen, _ = string.find(arg1,"has fallen to ")
 			if(hasFallen) then
-				atLevel, _, _ = string.find(arg1," at level")
 				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
 			end
 			--Death by Player
 			hasFallen = nil
 			_, hasFallen, _ = string.find(arg1,"has fallen in ")
 			if(hasFallen) then
-				HardcoreDeath_Killer = hasFallen
+				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
 			end
 			--Death by Natural causes
 			hasFallen = nil
 			_, hasFallen, _ = string.find(arg1,"died of ")
 			if(hasFallen) then
-				HardcoreDeath_Killer = hasFallen
+				HardcoreDeath_Killer = string.sub(arg1,hasFallen,atLevel)
 			end
 			return
 		end
