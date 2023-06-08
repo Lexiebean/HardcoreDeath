@@ -12,6 +12,7 @@ HardcoreDeath_Sent = false
 HardcoreDeath_Screenshot = true
 HardcoreDeath_World = true
 HardcoreDeath_Log = {}
+HardcoreDeath_Killer = ""
 
 local frame = CreateFrame("FRAME", "HardcoreDeath_FriendFrame");
 frame:RegisterEvent("FRIENDLIST_UPDATE");
@@ -72,7 +73,10 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 						end
 					end
 				end
-				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." at level "..level..". May this sacrifice not be forgotten.|r")
+				if HardcoreDeath_Killer == "" then
+				    HardcoreDeath_Killer = " a Shot in the Dark "
+				end
+				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." to"..HardcoreDeath_Killer.."at level "..level..". May this sacrifice not be forgotten.|r")
 				HardcoreDeath_Sent = true
 				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
 				if (HardcoreDeathLogGUI:IsVisible()) then 
@@ -373,6 +377,15 @@ function ChatFrame_OnEvent(event)
 			HardcoreDeath_Sent = false
 			HardcoreDeath_Find = chr
 			AddFriend(chr)
+			HardcoreDeath_Killer = ""
+			_, hasFallenTo, _ = string.find(arg1," to ")
+			atLevel, _, _ = string.find(arg1," at level")
+			if (hasFallenTo ~= nil and atLevel ~= nil) then
+				HardcoreDeath_Killer = string.sub(arg1,hasFallenTo,atLevel)
+				if (string.find(arg1,"by PVP")) then
+					HardcoreDeath_Killer = HardcoreDeath_Killer.."(PVP) "
+				end
+			end
 			return
 		end
 		
