@@ -645,7 +645,7 @@ HardcoreDeathLogGUI.logzones.text:SetPoint("TOPLEFT", 380, -38)
 
 
 HardcoreDeathLogFrame = CreateFrame("Button", "GameMenuButtonHardcoreDeathLogGUI", GameMenuFrame, "GameMenuButtonTemplate")
-HardcoreDeathLogFrame:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1)
+HardcoreDeathLogFrame:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -110)
 HardcoreDeathLogFrame:SetText("Hardcore Death Log")
 HardcoreDeathLogFrame:SetScript("OnClick", function()
 	HideUIPanel(GameMenuFrame)
