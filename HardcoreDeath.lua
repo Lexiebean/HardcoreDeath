@@ -571,7 +571,7 @@ HardcoreDeathLogGUI:SetScript("OnHide", function()
 end)
 
 HardcoreDeathLogGUI:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-HardcoreDeathLogGUI:SetWidth(750)
+HardcoreDeathLogGUI:SetWidth(780)
 HardcoreDeathLogGUI:SetHeight(450)
 HardcoreDeathLogGUI:SetBackdrop({
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -679,8 +679,8 @@ HardcoreDeathLogGUI.logkillers:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT
 HardcoreDeathLogGUI.logkillers:SetWidth(10)
 HardcoreDeathLogGUI.logkillers:SetHeight(10)
 
-HardcoreDeathLogGUI.logkillers.text = HardcoreDeathLogGUI.logzones:CreateFontString(nil, "HIGH", "GameFontNormal")
-HardcoreDeathLogGUI.logkillers.text:SetPoint("TOPLEFT", 510, -38)
+HardcoreDeathLogGUI.logkillers.text = HardcoreDeathLogGUI.logkillers:CreateFontString(nil, "HIGH", "GameFontNormal")
+HardcoreDeathLogGUI.logkillers.text:SetPoint("TOPLEFT", 540, -38)
 
 
 HardcoreDeathLogFrame = CreateFrame("Button", "GameMenuButtonHardcoreDeathLogGUI", GameMenuFrame, "GameMenuButtonTemplate")
