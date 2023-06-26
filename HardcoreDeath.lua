@@ -441,10 +441,15 @@ SlashCmdList["HARDCOREDEATH"] = function(message)
 			HardcoreDeath_World = true
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Send death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
+	elseif commandlist[1] == "purge" then
+		HardcoreDeath_Log = {}
+		GenerateLog()
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r Purged Hardcore Death log!")
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r "..tostring(GetAddOnMetadata("HardcoreDeath", "Version")))
 		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd ss|cffaaaaaa - |rAutomatically Screenshot Death: |cffbe5eff".. tostring(HardcoreDeath_Screenshot))
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world :|cffbe5eff ".. tostring(HardcoreDeath_World))
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd world|cffaaaaaa - |rSend death messages to world:|cffbe5eff ".. tostring(HardcoreDeath_World))
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff/hcd purge|cffaaaaaa - |rPurge Hardcore Death log")
 	end
 end
 
