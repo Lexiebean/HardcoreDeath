@@ -78,7 +78,7 @@ local function HardcoreDeath_eventHandler(self, event, ...)
 				end
 				DEFAULT_CHAT_FRAME:AddMessage("|cffbe5eff[HardcoreDeath]|r |cfffff000A tragedy has occurred. "..cend..ccol.."\124Hplayer:"..name.."\124h["..name.."]\124h\124r".."|cfffff000 the"..race..cend.." "..ccol..class.." |cfffff000"..guild.."has died in "..area.." to"..HardcoreDeath_Killer.."at level "..level..". May this sacrifice not be forgotten.|r")
 				HardcoreDeath_Sent = true
-				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area)
+				table.insert(HardcoreDeath_Log, ddate .. "&" .. name .. "&" .. level .. "&" .. class .. "&" .. area .. "&" .. HardcoreDeath_Killer)
 				if (HardcoreDeathLogGUI:IsVisible()) then 
 					GenerateLog() 
 				end
@@ -455,7 +455,7 @@ local function GenerateLogDates(i,length)
 	local output = "==== Date ==== \n\n"
 	
 	for i=i,length, -1 do
-		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
 		
 		local _,_,y=string.find(d,"(%d%d)")
 		local _,_,m=string.find(d,"(%d%d)",3)
@@ -475,7 +475,7 @@ local function GenerateLogNames(i,length)
 	local output = "=== Name === \n\n"
 	
 	for i=i,length, -1 do
-		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. n .. "\n"
 	end
 	return output
@@ -486,7 +486,7 @@ local function GenerateLogLevels(i,length)
 	local output = "= Level = \n\n"
 	
 	for i=i,length, -1 do
-		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. l .. "\n"
 	end
 	return output
@@ -497,7 +497,7 @@ local function GenerateLogClasses(i,length)
 	local output = "= Class = \n\n"
 	
 	for i=i,length, -1 do
-		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. c .. "\n"
 	end
 	return output
@@ -508,8 +508,19 @@ local function GenerateLogZones(i,length)
 	local output = "===== Zone ===== \n\n"
 	
 	for i=i,length, -1 do
-		local d,n,l,c,z = hcstrsplit("&", HardcoreDeath_Log[i])
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
 		output = output .. z .. "\n"
+	end
+	return output
+end
+
+local function GenerateLogKillers(i,length)
+
+	local output = "======= Killed by ======= \n\n"
+	
+	for i=i,length, -1 do
+		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
+		output = output .. k .. "\n"
 	end
 	return output
 end
@@ -534,11 +545,13 @@ function GenerateLog()
 	local HardcoreDeathLogLevels = GenerateLogLevels(i,length)
 	local HardcoreDeathLogClasses = GenerateLogClasses(i,length)
 	local HardcoreDeathLogZones = GenerateLogZones(i,length)
+	local HardcoreDeathLogKillers = GenerateLogKillers(i,length)
 	HardcoreDeathLogGUI.logdates.text:SetText(HardcoreDeathLogDates)
 	HardcoreDeathLogGUI.lognames.text:SetText(HardcoreDeathLogNames)
 	HardcoreDeathLogGUI.loglevels.text:SetText(HardcoreDeathLogLevels)
 	HardcoreDeathLogGUI.logclasses.text:SetText(HardcoreDeathLogClasses)
 	HardcoreDeathLogGUI.logzones.text:SetText(HardcoreDeathLogZones)
+	HardcoreDeathLogGUI.logkillers.text:SetText(HardcoreDeathLogKillers)
 end
 
 -- Log Interface
@@ -553,7 +566,7 @@ HardcoreDeathLogGUI:SetScript("OnHide", function()
 end)
 
 HardcoreDeathLogGUI:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-HardcoreDeathLogGUI:SetWidth(550)
+HardcoreDeathLogGUI:SetWidth(750)
 HardcoreDeathLogGUI:SetHeight(450)
 HardcoreDeathLogGUI:SetBackdrop({
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -655,6 +668,14 @@ HardcoreDeathLogGUI.logzones:SetHeight(10)
 
 HardcoreDeathLogGUI.logzones.text = HardcoreDeathLogGUI.logzones:CreateFontString(nil, "HIGH", "GameFontNormal")
 HardcoreDeathLogGUI.logzones.text:SetPoint("TOPLEFT", 380, -38)
+
+HardcoreDeathLogGUI.logkillers = CreateFrame("Frame", "HardcoreDeathLogGUILogKillers", HardcoreDeathLogGUI)
+HardcoreDeathLogGUI.logkillers:SetPoint("TOPLEFT", HardcoreDeathLogGUI, "TOPLEFT", 0, 12)
+HardcoreDeathLogGUI.logkillers:SetWidth(10)
+HardcoreDeathLogGUI.logkillers:SetHeight(10)
+
+HardcoreDeathLogGUI.logkillers.text = HardcoreDeathLogGUI.logzones:CreateFontString(nil, "HIGH", "GameFontNormal")
+HardcoreDeathLogGUI.logkillers.text:SetPoint("TOPLEFT", 510, -38)
 
 
 HardcoreDeathLogFrame = CreateFrame("Button", "GameMenuButtonHardcoreDeathLogGUI", GameMenuFrame, "GameMenuButtonTemplate")
