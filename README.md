@@ -5,8 +5,8 @@ This addon will also take a screenshot of your death.
 
 Use command: `/hcd` - To check version and settings status  
 Use command: `/hcd ss` - To enable/disable death screenshotting  
-use command: `/hcd world` - To enable/disable sending death messages to world chat.
-use command: `/hcd purge` - To purge the death log
+Use command: `/hcd world` - To enable/disable sending death messages to world chat.  
+Use command: `/hcd purge` - To purge the death log
 
 Install location should be: ..\Interface\AddOns\HardcoreDeath
 
