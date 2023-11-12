@@ -525,7 +525,7 @@ local function GenerateLogKillers(i,length)
 	
 	for i=i,length, -1 do
 		local d,n,l,c,z,k = hcstrsplit("&", HardcoreDeath_Log[i])
-		output = output .. k .. "\n"
+		output = output .. (k or "") .. "\n"
 	end
 	return output
 end
